@@ -1,4 +1,4 @@
-package com.example.recipesjetpackcompose.ui.theme
+package com.example.recipesjetpackcompose.presentation.theme
 
 import android.app.Activity
 import android.os.Build
@@ -9,7 +9,12 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import com.example.recipesjetpackcompose.R
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -48,6 +53,15 @@ fun RecipesJetpackComposeTheme(
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+    val view = LocalView.current
+    val statusBarColor = ContextCompat.getColor(LocalContext.current, R.color.status_bar)
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = statusBarColor
+        }
     }
 
     MaterialTheme(
