@@ -20,6 +20,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_KEY", "\"d119eba3966747da8c6d63fa793d2f6f\"")
+        buildConfigField("String", "BASE_URL", "\"https://api.spoonacular.com/\"")
+        buildConfigField("long", "TIMEOUT_CONNECT", "30000L")
+        buildConfigField("long", "TIMEOUT_READ", "30000L")
+        buildConfigField("long", "TIMEOUT_WRITE", "30000L")
     }
 
     buildTypes {
