@@ -1,8 +1,12 @@
 package com.example.recipesjetpackcompose.di
 
 import com.example.recipesjetpackcompose.BuildConfig
+import com.example.recipesjetpackcompose.data.interfaces.RecipeMapper
+import com.example.recipesjetpackcompose.data.model.RecipeMapperImpl
 import com.example.recipesjetpackcompose.data.remote.api.RecipeService
 import com.example.recipesjetpackcompose.data.remote.interceptor.HeadersInterceptor
+import com.example.recipesjetpackcompose.data.repository.RecipeRepositoryImpl
+import com.example.recipesjetpackcompose.domain.interfaces.repository.RecipeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,5 +72,23 @@ object DataModule {
     @Provides
     fun provideRecipeService(retrofit: Retrofit): RecipeService {
         return retrofit.create(RecipeService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthRepository(
+        recipeService: RecipeService,
+        recipeMapper: RecipeMapper,
+    ): RecipeRepository {
+        return RecipeRepositoryImpl(
+            recipeService = recipeService,
+            recipeMapper = recipeMapper
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideRecipeMapper(): RecipeMapper {
+        return RecipeMapperImpl()
     }
 }

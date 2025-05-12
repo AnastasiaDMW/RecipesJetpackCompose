@@ -14,7 +14,6 @@ interceptorVersion = "4.12.0"
 navigationVersion = "2.8.9"
 serializationVersion = "1.8.0"
 kspVersion = "2.1.10-1.0.29"
-roomVersion = "2.7.1"
 hiltVersion = "2.51.1"
 lifecycleVersion = "2.8.7"
 hiltNavVersion = "1.2.0"
@@ -49,11 +48,6 @@ retrofit2-converter-gson = { group = "com.squareup.retrofit2", name = "converter
 
 ## interceptor
 okhttp-logging-interceptore = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "interceptorVersion" }
-
-## Room
-androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
-androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
 
 ## Hilt and VM
 google-dagger-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" }

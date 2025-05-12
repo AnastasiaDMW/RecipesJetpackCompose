@@ -1,0 +1,33 @@
+package com.example.recipesjetpackcompose.domain.usecase
+
+import com.example.recipesjetpackcompose.BuildConfig
+import com.example.recipesjetpackcompose.domain.interfaces.repository.RecipeRepository
+import com.example.recipesjetpackcompose.domain.interfaces.usecase.GetRecipeDetailUseCase
+import com.example.recipesjetpackcompose.domain.model.DetailRecipe
+import com.example.recipesjetpackcompose.domain.model.Result
+
+@Suppress("UNCHECKED_CAST")
+class GetRecipeDetailUseCaseImpl(
+    private val recipeRepository: RecipeRepository,
+) : GetRecipeDetailUseCase {
+
+    override suspend fun execute(recipeId: Int): Result<DetailRecipe> {
+        return when (val result = recipeRepository.getRecipeDetailById(recipeId)) {
+            is Result.Success<*> -> modifyIngredientImages(result.data as DetailRecipe)
+            is Result.ConnectionError -> result
+            is Result.ServerError -> result
+            is Result.TimeoutError -> result
+            is Result.UnknownError -> result
+        } as Result<DetailRecipe>
+    }
+
+    private fun modifyIngredientImages(recipe: DetailRecipe): DetailRecipe {
+        return recipe.copy(
+            extendedIngredients = recipe.extendedIngredients.map { ingredient ->
+                ingredient.copy(
+                    image = "${BuildConfig.BASE_IMAGE_URL}${ingredient.image}?apiKey=${BuildConfig.API_KEY}"
+                )
+            }
+        )
+    }
+}

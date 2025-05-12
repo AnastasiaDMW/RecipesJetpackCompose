@@ -21,6 +21,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_KEY", "\"d119eba3966747da8c6d63fa793d2f6f\"")
         buildConfigField("String", "BASE_URL", "\"https://api.spoonacular.com/\"")
+        buildConfigField("String", "BASE_IMAGE_URL", "\"https://spoonacular.com/cdn/ingredients_100x100/\"")
+        buildConfigField("String", "TAG", "\"LOG_APP\"")
         buildConfigField("long", "TIMEOUT_CONNECT", "30000L")
         buildConfigField("long", "TIMEOUT_READ", "30000L")
         buildConfigField("long", "TIMEOUT_WRITE", "30000L")
@@ -71,10 +73,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     //Serialization json
     implementation(libs.kotlinx.serialization.json)
-    //Room and ksp
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
     //Hilt and ksp
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
