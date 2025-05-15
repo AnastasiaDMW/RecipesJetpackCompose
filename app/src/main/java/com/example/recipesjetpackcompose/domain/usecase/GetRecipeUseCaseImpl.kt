@@ -9,7 +9,7 @@ class GetRecipeUseCaseImpl(
     private val recipeRepository: RecipeRepository,
 ): GetRecipeUseCase {
 
-    override suspend fun execute(offset: Int): Result<List<Recipe>> {
+    override suspend fun execute(offset: Int): List<Recipe> {
         return recipeRepository.getRecipes(offset)
     }
 }

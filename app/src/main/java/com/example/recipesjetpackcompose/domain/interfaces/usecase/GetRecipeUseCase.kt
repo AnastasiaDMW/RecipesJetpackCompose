@@ -5,5 +5,5 @@ import com.example.recipesjetpackcompose.domain.model.Result
 
 interface GetRecipeUseCase {
 
-    suspend fun execute(offset: Int): Result<List<Recipe>>
+    suspend fun execute(offset: Int): List<Recipe>
 }

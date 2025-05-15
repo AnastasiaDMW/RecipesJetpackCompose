@@ -10,14 +10,9 @@ class GetRecipeDetailUseCaseImpl(
     private val recipeRepository: RecipeRepository,
 ) : GetRecipeDetailUseCase {
 
-    override suspend fun execute(recipeId: Int): Result<DetailRecipe> {
-        return when (val result = recipeRepository.getRecipeDetailById(recipeId)) {
-            is Result.Success -> Result.Success(modifyIngredientImages(result.data))
-            is Result.ConnectionError -> result
-            is Result.ServerError -> result
-            is Result.TimeoutError -> result
-            is Result.UnknownError -> result
-        }
+    override suspend fun execute(recipeId: Int): DetailRecipe {
+        val result = recipeRepository.getRecipeDetailById(recipeId)
+        return modifyIngredientImages(result)
     }
 
     private fun modifyIngredientImages(recipe: DetailRecipe): DetailRecipe {

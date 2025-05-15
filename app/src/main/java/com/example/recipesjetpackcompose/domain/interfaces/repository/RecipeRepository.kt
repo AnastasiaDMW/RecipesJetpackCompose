@@ -6,7 +6,9 @@ import com.example.recipesjetpackcompose.domain.model.Result
 
 interface RecipeRepository {
 
-    suspend fun getRecipes(offset: Int): Result<List<Recipe>>
+    suspend fun getRecipes(offset: Int): List<Recipe>
 
-    suspend fun getRecipeDetailById(id: Int): Result<DetailRecipe>
+    suspend fun getSearchRecipes(offset: Int, ingredient: String): List<Recipe>
+
+    suspend fun getRecipeDetailById(id: Int): DetailRecipe
 }

@@ -5,5 +5,5 @@ import com.example.recipesjetpackcompose.domain.model.Result
 
 interface GetRecipeDetailUseCase {
 
-    suspend fun execute(recipeId: Int): Result<DetailRecipe>
+    suspend fun execute(recipeId: Int): DetailRecipe
 }

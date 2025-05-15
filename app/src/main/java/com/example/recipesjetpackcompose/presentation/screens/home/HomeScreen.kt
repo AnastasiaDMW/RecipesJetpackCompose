@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,7 +20,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -38,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -50,13 +49,11 @@ fun HomeScreen(
     onRecipeClick: (Int) -> Unit,
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
+    val searchQuery by homeScreenViewModel.searchQuery.collectAsState()
     val state by homeScreenViewModel.uiState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(Unit) {
-        homeScreenViewModel.handleEvent(event = HomeScreenEvent.GetRecipes)
-    }
+    val recipeList = homeScreenViewModel.recipesPager.collectAsLazyPagingItems()
 
     Scaffold(
         containerColor = colorResource(id = R.color.background_color),
@@ -95,7 +92,7 @@ fun HomeScreen(
 
                 },
                 singleLine = true,
-                value = state.searchText,
+                value = searchQuery,
                 onValueChange = {
                     homeScreenViewModel.handleEvent(
                         event = HomeScreenEvent.UpdateSearchTextField(
@@ -121,15 +118,22 @@ fun HomeScreen(
                     )
                 }
             )
+
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(state.recipes) { recipe ->
-                    RecipeItem(
-                        recipe = recipe,
-                        onRecipeClick
-                    )
+                items(
+                    count = recipeList.itemCount,
+                    key = { index -> recipeList[index]?.id ?: index }
+                ) { index ->
+                    val item = recipeList[index]
+                    item?.let {
+                        RecipeItem(
+                            recipe = it,
+                            onClickToRecipe = onRecipeClick
+                        )
+                    }
                 }
             }
         }
