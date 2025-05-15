@@ -4,4 +4,5 @@ data class Recipe(
     val id: Int = 0,
     val title: String = "",
     val image: String = "",
+    val totalResults: Int = 0,
 )

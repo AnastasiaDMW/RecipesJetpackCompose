@@ -5,8 +5,9 @@
     <string name="ic_loading">Loading icon</string>
     <string name="error_img">Error image</string>
     <string name="retry_btn">Retry</string>
-    <string name="search">Search Recipe</string>
+    <string name="search">Search by ingredients</string>
     <string name="ic_search">Search icon</string>
+    <string name="ic_close">Close icon</string>
     <string name="gluten_free_icon">Gluten free icon</string>
     <string name="ic_vegan">Vegan icon</string>
     <string name="ic_cooking_minutes">Cooking minutes icon</string>

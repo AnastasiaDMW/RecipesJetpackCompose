@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,6 +29,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -46,6 +51,12 @@ fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
     val state by homeScreenViewModel.uiState.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        homeScreenViewModel.handleEvent(event = HomeScreenEvent.GetRecipes)
+    }
 
     Scaffold(
         containerColor = colorResource(id = R.color.background_color),
@@ -62,13 +73,28 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
                 trailingIcon = {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(R.string.ic_search)
-                    )
+                    if (state.isCloseIconVisible) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.ic_search)
+                        )
+                    } else {
+                        Icon(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clickable {
+                                    homeScreenViewModel.handleEvent(
+                                        event = HomeScreenEvent.ClearSearchTextField
+                                    )
+                                },
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(R.string.ic_close)
+                        )
+                    }
+
                 },
-                maxLines = 1,
+                singleLine = true,
                 value = state.searchText,
                 onValueChange = {
                     homeScreenViewModel.handleEvent(
@@ -80,6 +106,13 @@ fun HomeScreen(
                 textStyle = TextStyle(fontSize = 18.sp, color = Color.Black),
                 shape = RoundedCornerShape(16.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                        // TODO: Добавить событие поиска рецептов
+                    }
+                ),
                 label = {
                     Text(
                         text = stringResource(R.string.search),

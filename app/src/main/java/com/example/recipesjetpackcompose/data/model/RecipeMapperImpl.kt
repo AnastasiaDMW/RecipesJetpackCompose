@@ -19,7 +19,8 @@ class RecipeMapperImpl: RecipeMapper {
                     Recipe(
                         id = it.id ?: -1,
                         image = it.image.orEmpty(),
-                        title = it.title.orEmpty()
+                        title = it.title.orEmpty(),
+                        totalResults = recipeResponse.totalResults ?: -1
                     )
                 }
             } ?: emptyList()

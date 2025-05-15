@@ -1,60 +1,94 @@
 package com.example.recipesjetpackcompose.presentation.screens.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.recipesjetpackcompose.domain.interfaces.usecase.GetRecipeUseCase
+import com.example.recipesjetpackcompose.domain.model.Result
+import com.example.recipesjetpackcompose.presentation.TAG
 import com.example.recipesjetpackcompose.presentation.model.Recipe
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor() : ViewModel() {
+class HomeScreenViewModel @Inject constructor(
+    private val recipeUseCase: GetRecipeUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeScreenState())
     val uiState: StateFlow<HomeScreenState> = _uiState
 
-    private val testData = listOf(
-        Recipe(
-            id = 715415,
-            title = "Red Lentil Soup with Chicken and Turnips",
-            image = "https://img.spoonacular.com/recipes/715415-312x231.jpg"
-        ),
-        Recipe(
-            id = 716406,
-            title = "Asparagus and Pea Soup: Real Convenience Food",
-            image = "https://img.spoonacular.com/recipes/716406-312x231.jpg"
-        ),
-        Recipe(
-            id = 644387,
-            title = "Garlicky Kale",
-            image = "https://img.spoonacular.com/recipes/644387-312x231.jpg"
-        ),
-        Recipe(
-            id = 715446,
-            title = "Slow Cooker Beef Stew",
-            image = "https://img.spoonacular.com/recipes/715446-312x231.jpg"
-        ),
-    )
-
-    init {
-        initTestData()
-    }
+    private var amountRecipe: Int = 0
 
     fun handleEvent(event: HomeScreenEvent) {
         when (event) {
             is HomeScreenEvent.UpdateSearchTextField -> updateSearchText(event.recipe)
+            HomeScreenEvent.GetRecipes -> getRecipes()
+            HomeScreenEvent.ClearSearchTextField -> clearSearchText()
         }
     }
 
-    private fun updateSearchText(recipe: String) {
+    private fun getRecipes() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                when (val result = recipeUseCase.execute(100 * amountRecipe)) {
+                    is Result.Success -> {
+                        amountRecipe += 1
+                        _uiState.value = _uiState.value.copy(
+                            recipes = recipeListDomainToPresenter(
+                                result.data
+                            )
+                        )
+                    }
+                    is Result.TimeoutError -> onError(result.message)
+                    is Result.UnknownError -> onError(result.message)
+                    is Result.ConnectionError -> onError(result.message)
+                    is Result.ServerError -> onError(message = "${result.message} ${result.errorCode}")
+                }
+            }
+        }
+    }
+
+    private fun clearSearchText() {
         _uiState.value = _uiState.value.copy(
-            searchText = recipe
+            isCloseIconVisible = true,
+            searchText = ""
         )
     }
 
-    private fun initTestData() {
-        _uiState.value = _uiState.value.copy(
-            recipes = testData
-        )
+    private fun updateSearchText(recipe: String) {
+        if (recipe.isEmpty()) {
+            _uiState.value = _uiState.value.copy(
+                isCloseIconVisible = true,
+                searchText = recipe
+            )
+        } else {
+            _uiState.value = _uiState.value.copy(
+                isCloseIconVisible = false,
+                searchText = recipe
+            )
+        }
+    }
+
+    private fun onError(message: String) {
+        Log.d(TAG, message)
+    }
+
+    private fun recipeListDomainToPresenter(
+        recipes: List<com.example.recipesjetpackcompose.domain.model.Recipe>
+    ): List<Recipe> {
+        return recipes.map {
+            Recipe(
+                id = it.id,
+                title = it.title,
+                image = it.image,
+                totalResults = it.totalResults
+            )
+        }
     }
 }
