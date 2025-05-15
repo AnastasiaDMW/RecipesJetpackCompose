@@ -42,6 +42,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.recipesjetpackcompose.R
 import com.example.recipesjetpackcompose.presentation.model.ExtendedIngredients
+import com.example.recipesjetpackcompose.presentation.screens.util.LoadingScreen
 
 @Composable
 fun DetailScreen(
@@ -53,164 +54,169 @@ fun DetailScreen(
     val state by detailScreenViewModel.uiState.collectAsState()
 
     LaunchedEffect(recipeId) {
-        detailScreenViewModel.handleEvent(event = DetailScreenEvent.UpdateRecipeId(recipeId ?: -1))
+        detailScreenViewModel.handleEvent(
+            event = DetailScreenEvent.UpdateRecipeId(recipeId ?: -1)
+        )
     }
-
-    Scaffold(
-        containerColor = colorResource(id = R.color.background_color),
-        modifier = modifier
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            AsyncImage(
+    if (state.isLoading) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            containerColor = colorResource(id = R.color.background_color),
+            modifier = modifier
+        ) { innerPadding ->
+            Column(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .padding(top = 16.dp)
-                    .height(248.dp),
-                model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(state.recipeDetail.image)
-                    .crossfade(true)
-                    .build(),
-                contentScale = ContentScale.Crop,
-                contentDescription = stringResource(R.string.recipe_img)
-            )
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                text = state.recipeDetail.title,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    painter = painterResource(R.drawable.ic_gluten_free),
-                    contentDescription = stringResource(R.string.gluten_free_icon)
+                AsyncImage(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .padding(top = 16.dp)
+                        .height(248.dp),
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(state.recipeDetail.image)
+                        .crossfade(true)
+                        .build(),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = stringResource(R.string.recipe_img)
                 )
 
                 Text(
-                    text = stringResource(R.string.gluten_free_tv).format(
-                        if (state.recipeDetail.glutenFree)
-                            stringResource(id = R.string.yes_tv) else stringResource(id = R.string.no_tv)
-                    ),
-                    fontSize = 24.sp
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(39.dp),
-                    painter = painterResource(R.drawable.ic_vegan),
-                    contentDescription = stringResource(R.string.ic_vegan)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    text = state.recipeDetail.title,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
                 )
 
-                Text(
-                    text = stringResource(R.string.vegan_tv).format(
-                        if (state.recipeDetail.vegan)
-                            stringResource(id = R.string.yes_tv) else stringResource(id = R.string.no_tv)
-                    ),
-                    fontSize = 24.sp
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(39.dp),
-                    painter = painterResource(R.drawable.ic_time),
-                    contentDescription = stringResource(R.string.ic_cooking_minutes)
-                )
-
-                Text(
-                    text = stringResource(R.string.cooking_minutes_tv)
-                        .format(state.recipeDetail.cookingMinutes),
-                    fontSize = 24.sp
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(39.dp),
-                    painter = painterResource(R.drawable.ic_health),
-                    contentDescription = stringResource(R.string.ic_health_score)
-                )
-
-                Text(
-                    text = stringResource(R.string.health_score_tv)
-                        .format(state.recipeDetail.healthScore),
-                    fontSize = 24.sp
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(36.dp),
-                    painter = painterResource(R.drawable.ic_serving),
-                    contentDescription = stringResource(R.string.ic_servings)
-                )
-
-                Text(
-                    text = stringResource(R.string.servings_tv).format(state.recipeDetail.servings),
-                    fontSize = 24.sp
-                )
-            }
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                text = stringResource(R.string.instruction_tv)
-                    .format(removeHtmlTags(state.recipeDetail.instructions)),
-                fontSize = 24.sp
-            )
-
-            if (state.recipeDetail.extendedIngredients.isNotEmpty()) {
-                Text(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.ingredients_tv),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
-                )
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(40.dp),
+                        painter = painterResource(R.drawable.ic_gluten_free),
+                        contentDescription = stringResource(R.string.gluten_free_icon)
+                    )
 
-                LazyRow(
+                    Text(
+                        text = stringResource(R.string.gluten_free_tv).format(
+                            if (state.recipeDetail.glutenFree)
+                                stringResource(id = R.string.yes_tv) else stringResource(id = R.string.no_tv)
+                        ),
+                        fontSize = 24.sp
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(39.dp),
+                        painter = painterResource(R.drawable.ic_vegan),
+                        contentDescription = stringResource(R.string.ic_vegan)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.vegan_tv).format(
+                            if (state.recipeDetail.vegan)
+                                stringResource(id = R.string.yes_tv) else stringResource(id = R.string.no_tv)
+                        ),
+                        fontSize = 24.sp
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(39.dp),
+                        painter = painterResource(R.drawable.ic_time),
+                        contentDescription = stringResource(R.string.ic_cooking_minutes)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.cooking_minutes_tv)
+                            .format(state.recipeDetail.cookingMinutes),
+                        fontSize = 24.sp
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(39.dp),
+                        painter = painterResource(R.drawable.ic_health),
+                        contentDescription = stringResource(R.string.ic_health_score)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.health_score_tv)
+                            .format(state.recipeDetail.healthScore),
+                        fontSize = 24.sp
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(R.drawable.ic_serving),
+                        contentDescription = stringResource(R.string.ic_servings)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.servings_tv).format(state.recipeDetail.servings),
+                        fontSize = 24.sp
+                    )
+                }
+
+                Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(state.recipeDetail.extendedIngredients) {
-                        IngredientItem(it)
+                    text = stringResource(R.string.instruction_tv)
+                        .format(removeHtmlTags(state.recipeDetail.instructions)),
+                    fontSize = 24.sp
+                )
+
+                if (state.recipeDetail.extendedIngredients.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.ingredients_tv),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
+
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(state.recipeDetail.extendedIngredients) {
+                            IngredientItem(it)
+                        }
                     }
                 }
             }
@@ -228,16 +234,18 @@ private fun IngredientItem(extendedIngredients: ExtendedIngredients) {
     ) {
         Box(
             modifier = Modifier
+                .width(200.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.White)
         ) {
             AsyncImage(
                 modifier = Modifier
                     .height(124.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .clip(RoundedCornerShape(16.dp))
+                    .align(Alignment.Center),
                 model = extendedIngredients.image,
                 contentDescription = stringResource(R.string.ingredient_img),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillHeight
             )
         }
 

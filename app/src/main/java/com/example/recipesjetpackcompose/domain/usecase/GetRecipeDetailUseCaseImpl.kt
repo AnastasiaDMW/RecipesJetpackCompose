@@ -6,19 +6,18 @@ import com.example.recipesjetpackcompose.domain.interfaces.usecase.GetRecipeDeta
 import com.example.recipesjetpackcompose.domain.model.DetailRecipe
 import com.example.recipesjetpackcompose.domain.model.Result
 
-@Suppress("UNCHECKED_CAST")
 class GetRecipeDetailUseCaseImpl(
     private val recipeRepository: RecipeRepository,
 ) : GetRecipeDetailUseCase {
 
     override suspend fun execute(recipeId: Int): Result<DetailRecipe> {
         return when (val result = recipeRepository.getRecipeDetailById(recipeId)) {
-            is Result.Success<*> -> modifyIngredientImages(result.data as DetailRecipe)
+            is Result.Success -> Result.Success(modifyIngredientImages(result.data))
             is Result.ConnectionError -> result
             is Result.ServerError -> result
             is Result.TimeoutError -> result
             is Result.UnknownError -> result
-        } as Result<DetailRecipe>
+        }
     }
 
     private fun modifyIngredientImages(recipe: DetailRecipe): DetailRecipe {
