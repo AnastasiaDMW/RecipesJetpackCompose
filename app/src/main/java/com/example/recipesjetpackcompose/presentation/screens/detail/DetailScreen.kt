@@ -136,7 +136,6 @@ fun DetailScreen(
                             painter = painterResource(R.drawable.ic_gluten_free),
                             contentDescription = stringResource(R.string.gluten_free_icon)
                         )
-
                         Text(
                             text = stringResource(R.string.gluten_free_tv).format(
                                 if (state.recipeDetail.glutenFree)
@@ -154,11 +153,10 @@ fun DetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
-                            modifier = Modifier.size(39.dp),
+                            modifier = Modifier.size(40.dp),
                             painter = painterResource(R.drawable.ic_vegan),
                             contentDescription = stringResource(R.string.ic_vegan)
                         )
-
                         Text(
                             text = stringResource(R.string.vegan_tv).format(
                                 if (state.recipeDetail.vegan)
@@ -174,11 +172,10 @@ fun DetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
-                            modifier = Modifier.size(39.dp),
+                            modifier = Modifier.size(40.dp),
                             painter = painterResource(R.drawable.ic_time),
                             contentDescription = stringResource(R.string.ic_cooking_minutes)
                         )
-
                         Text(
                             text = stringResource(R.string.cooking_minutes_tv)
                                 .format(state.recipeDetail.cookingMinutes),
@@ -194,11 +191,10 @@ fun DetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
-                            modifier = Modifier.size(39.dp),
+                            modifier = Modifier.size(40.dp),
                             painter = painterResource(R.drawable.ic_health),
                             contentDescription = stringResource(R.string.ic_health_score)
                         )
-
                         Text(
                             text = stringResource(R.string.health_score_tv)
                                 .format(state.recipeDetail.healthScore),
@@ -212,22 +208,29 @@ fun DetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
-                            modifier = Modifier.size(36.dp),
+                            modifier = Modifier.size(40.dp),
                             painter = painterResource(R.drawable.ic_serving),
                             contentDescription = stringResource(R.string.ic_servings)
                         )
-
                         Text(
                             text = stringResource(R.string.servings_tv).format(state.recipeDetail.servings),
                             fontSize = 18.sp
                         )
                     }
 
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        text = stringResource(R.string.instruction_tv)
+                            .format(removeHtmlTags(state.recipeDetail.instructions)),
+                        fontSize = 20.sp
+                    )
+
                     if (state.recipeDetail.extendedIngredients.isNotEmpty()) {
                         Text(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp),
+                                .fillMaxWidth(),
                             text = stringResource(R.string.ingredients_tv),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp
@@ -244,15 +247,6 @@ fun DetailScreen(
                             }
                         }
                     }
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        text = stringResource(R.string.instruction_tv)
-                            .format(removeHtmlTags(state.recipeDetail.instructions)),
-                        fontSize = 20.sp
-                    )
                 }
             }
         }
