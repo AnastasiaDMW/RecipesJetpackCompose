@@ -11,6 +11,8 @@ import com.example.recipesjetpackcompose.data.SearchRecipesDataSource
 import com.example.recipesjetpackcompose.domain.interfaces.repository.RecipeRepository
 import com.example.recipesjetpackcompose.presentation.model.Recipe
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val repository: RecipeRepository
