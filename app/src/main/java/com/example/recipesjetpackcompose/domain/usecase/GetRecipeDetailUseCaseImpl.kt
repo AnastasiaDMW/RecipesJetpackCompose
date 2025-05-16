@@ -4,7 +4,6 @@ import com.example.recipesjetpackcompose.BuildConfig
 import com.example.recipesjetpackcompose.domain.interfaces.repository.RecipeRepository
 import com.example.recipesjetpackcompose.domain.interfaces.usecase.GetRecipeDetailUseCase
 import com.example.recipesjetpackcompose.domain.model.DetailRecipe
-import com.example.recipesjetpackcompose.domain.model.Result
 
 class GetRecipeDetailUseCaseImpl(
     private val recipeRepository: RecipeRepository,

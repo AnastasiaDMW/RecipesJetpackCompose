@@ -7,7 +7,7 @@ import com.example.recipesjetpackcompose.domain.model.Recipe
 
 class RecipesDataSource(
     private val recipeRepository: RecipeRepository
-): PagingSource<Int, Recipe>() {
+) : PagingSource<Int, Recipe>() {
 
     override fun getRefreshKey(state: PagingState<Int, Recipe>): Int? {
         return state.anchorPosition?.let { anchorPosition ->

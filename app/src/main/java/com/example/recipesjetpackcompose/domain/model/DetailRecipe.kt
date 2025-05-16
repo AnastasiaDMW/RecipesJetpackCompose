@@ -1,6 +1,5 @@
 package com.example.recipesjetpackcompose.domain.model
 
-
 data class DetailRecipe(
     val id: Int,
     val image: String,

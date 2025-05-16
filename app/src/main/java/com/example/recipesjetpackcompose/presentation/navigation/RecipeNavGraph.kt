@@ -36,8 +36,7 @@ fun RecipeNavGraph(
             val recipeId = navBackStack.arguments?.getInt(DetailDestination.RECIPE_ID_ARG)
 
             DetailScreen(
-                recipeId = recipeId,
-                onBack = { navController.popBackStack() }
+                recipeId = recipeId
             )
         }
     }

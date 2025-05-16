@@ -25,4 +25,5 @@
     <string name="yes_tv">Yes</string>
     <string name="no_tv">No</string>
     <string name="error_network">Failed to load</string>
+    <string name="error_item_message">Some error occurred</string>
 </resources>

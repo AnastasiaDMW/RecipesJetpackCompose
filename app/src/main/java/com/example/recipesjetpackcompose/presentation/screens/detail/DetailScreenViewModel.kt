@@ -1,18 +1,18 @@
 package com.example.recipesjetpackcompose.presentation.screens.detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipesjetpackcompose.domain.interfaces.usecase.GetRecipeDetailUseCase
 import com.example.recipesjetpackcompose.domain.model.DetailRecipe
-import com.example.recipesjetpackcompose.domain.model.Result
-import com.example.recipesjetpackcompose.presentation.TAG
 import com.example.recipesjetpackcompose.presentation.model.ExtendedIngredients
 import com.example.recipesjetpackcompose.presentation.model.RecipeDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -25,29 +25,48 @@ class DetailScreenViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DetailScreenState())
     val uiState: StateFlow<DetailScreenState> = _uiState
 
+    private val _showErrorSnackbar = MutableSharedFlow<Boolean>()
+    val showErrorSnackbar: SharedFlow<Boolean> = _showErrorSnackbar
+
     fun handleEvent(event: DetailScreenEvent) {
         when (event) {
             is DetailScreenEvent.UpdateRecipeId -> getDetailDataForRecipe(event.recipeId)
+            DetailScreenEvent.RetryLoading -> getDetailDataForRecipe(_uiState.value.currentRecipeId)
         }
     }
 
     private fun getDetailDataForRecipe(recipeId: Int) {
-//        viewModelScope.launch {
-//            withContext(Dispatchers.IO) {
-//                when (val result = recipeDetailUseCase.execute(recipeId)) {
-//                    is Result.Success -> {
-//                        _uiState.value = _uiState.value.copy(
-//                            isLoading = false,
-//                            recipeDetail = detailRecipeDomainToPresenter(result.data)
-//                        )
-//                    }
-//                    is Result.ConnectionError -> onError(result.message)
-//                    is Result.ServerError -> onError(message = "${result.message} ${result.errorCode}")
-//                    is Result.TimeoutError -> onError(result.message)
-//                    is Result.UnknownError -> onError(result.message)
-//                }
-//            }
-//        }
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                error = null,
+                currentRecipeId = recipeId
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    recipeDetailUseCase.execute(recipeId)
+                }
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        recipeDetail = detailRecipeDomainToPresenter(response),
+                        error = null
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "Unknown error"
+                    )
+                }
+                _showErrorSnackbar.emit(true)
+            }
+        }
     }
 
     private fun detailRecipeDomainToPresenter(detail: DetailRecipe): RecipeDetail {
@@ -77,9 +96,5 @@ class DetailScreenViewModel @Inject constructor(
                 unit = it.unit
             )
         }
-    }
-
-    private fun onError(message: String) {
-        Log.d(TAG, message)
     }
 }

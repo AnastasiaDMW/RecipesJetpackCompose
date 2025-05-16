@@ -7,23 +7,22 @@ import com.example.recipesjetpackcompose.data.remote.models.RecipeResponse
 import com.example.recipesjetpackcompose.domain.model.DetailRecipe
 import com.example.recipesjetpackcompose.domain.model.ExtendedIngredients
 import com.example.recipesjetpackcompose.domain.model.Recipe
-import com.example.recipesjetpackcompose.presentation.model.RecipeDetail
 
-class RecipeMapperImpl: RecipeMapper {
+class RecipeMapperImpl : RecipeMapper {
 
     override fun recipeResponseDataToDomain(recipeResponse: RecipeResponse): List<Recipe> =
         recipeResponse.recipeResults?.mapNotNull { recipe ->
-                recipe.takeIf {
-                    it.id != null
-                }?.let {
-                    Recipe(
-                        id = it.id ?: -1,
-                        image = it.image.orEmpty(),
-                        title = it.title.orEmpty(),
-                        totalResults = recipeResponse.totalResults ?: -1
-                    )
-                }
-            } ?: emptyList()
+            recipe.takeIf {
+                it.id != null
+            }?.let {
+                Recipe(
+                    id = it.id ?: -1,
+                    image = it.image.orEmpty(),
+                    title = it.title.orEmpty(),
+                    totalResults = recipeResponse.totalResults ?: -1
+                )
+            }
+        } ?: emptyList()
 
     override fun detailRecipeResponseDataToDomain(detailRecipeResponse: DetailRecipeResponse): DetailRecipe =
         with(detailRecipeResponse) {

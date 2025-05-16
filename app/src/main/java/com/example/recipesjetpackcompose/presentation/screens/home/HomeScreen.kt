@@ -149,7 +149,9 @@ fun HomeScreen(
                 when (recipeList.loadState.append) {
                     is LoadState.Error -> {
                         item {
-                            ErrorItem(message = "Some error occurred")
+                            ErrorItem(
+                                message = stringResource(R.string.error_item_message)
+                            )
                         }
                     }
 
