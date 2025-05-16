@@ -120,7 +120,7 @@ fun DetailScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(vertical = 16.dp),
                         text = state.recipeDetail.title,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
@@ -142,7 +142,7 @@ fun DetailScreen(
                                 if (state.recipeDetail.glutenFree)
                                     stringResource(id = R.string.yes_tv) else stringResource(id = R.string.no_tv)
                             ),
-                            fontSize = 24.sp
+                            fontSize = 18.sp
                         )
                     }
 
@@ -164,7 +164,7 @@ fun DetailScreen(
                                 if (state.recipeDetail.vegan)
                                     stringResource(id = R.string.yes_tv) else stringResource(id = R.string.no_tv)
                             ),
-                            fontSize = 24.sp
+                            fontSize = 18.sp
                         )
                     }
 
@@ -182,7 +182,7 @@ fun DetailScreen(
                         Text(
                             text = stringResource(R.string.cooking_minutes_tv)
                                 .format(state.recipeDetail.cookingMinutes),
-                            fontSize = 24.sp
+                            fontSize = 18.sp
                         )
                     }
 
@@ -202,7 +202,7 @@ fun DetailScreen(
                         Text(
                             text = stringResource(R.string.health_score_tv)
                                 .format(state.recipeDetail.healthScore),
-                            fontSize = 24.sp
+                            fontSize = 18.sp
                         )
                     }
 
@@ -219,7 +219,7 @@ fun DetailScreen(
 
                         Text(
                             text = stringResource(R.string.servings_tv).format(state.recipeDetail.servings),
-                            fontSize = 24.sp
+                            fontSize = 18.sp
                         )
                     }
 
@@ -230,7 +230,7 @@ fun DetailScreen(
                                 .padding(top = 16.dp),
                             text = stringResource(R.string.ingredients_tv),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp
+                            fontSize = 20.sp
                         )
 
                         LazyRow(
@@ -251,7 +251,7 @@ fun DetailScreen(
                             .padding(bottom = 16.dp),
                         text = stringResource(R.string.instruction_tv)
                             .format(removeHtmlTags(state.recipeDetail.instructions)),
-                        fontSize = 24.sp
+                        fontSize = 20.sp
                     )
                 }
             }
