@@ -1,20 +1,28 @@
 package com.example.recipesjetpackcompose.presentation.screens.home
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -22,20 +30,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -107,7 +119,6 @@ fun HomeScreen(
                     onDone = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
-                        // TODO: Добавить событие поиска рецептов
                     }
                 ),
                 label = {
@@ -134,6 +145,32 @@ fun HomeScreen(
                             onClickToRecipe = onRecipeClick
                         )
                     }
+                }
+                when (recipeList.loadState.append) {
+                    is LoadState.Error -> {
+                        item {
+                            ErrorItem(message = "Some error occurred")
+                        }
+                    }
+
+                    LoadState.Loading -> {
+                        item {
+                            LoadingItem()
+                        }
+                    }
+
+                    is LoadState.NotLoading -> Unit
+                }
+
+                when (recipeList.loadState.refresh) {
+                    is LoadState.Error -> Unit
+                    LoadState.Loading -> {
+                        item {
+                            LoadingItem()
+                        }
+                    }
+
+                    is LoadState.NotLoading -> Unit
                 }
             }
         }
@@ -171,5 +208,57 @@ private fun RecipeItem(
             fontSize = 20.sp,
             color = Color.Black
         )
+    }
+}
+
+@Composable
+private fun LoadingItem() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .size(42.dp)
+                .padding(8.dp),
+            strokeWidth = 5.dp
+        )
+    }
+}
+
+@Composable
+private fun ErrorItem(message: String) {
+    Card(
+        modifier = Modifier
+            .padding(6.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Red)
+                .padding(8.dp)
+        ) {
+            Image(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(42.dp),
+                painter = painterResource(R.drawable.ic_error),
+                contentDescription = stringResource(R.string.ic_error),
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+            Text(
+                color = Color.White,
+                text = message,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .align(Alignment.CenterVertically)
+            )
+        }
     }
 }

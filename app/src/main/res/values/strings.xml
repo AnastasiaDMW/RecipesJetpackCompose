@@ -8,6 +8,7 @@
     <string name="search">Search by ingredients</string>
     <string name="ic_search">Search icon</string>
     <string name="ic_close">Close icon</string>
+    <string name="ic_error">Error icon</string>
     <string name="gluten_free_icon">Gluten free icon</string>
     <string name="ic_vegan">Vegan icon</string>
     <string name="ic_cooking_minutes">Cooking minutes icon</string>
