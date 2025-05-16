@@ -74,7 +74,7 @@ class HomeScreenViewModel @Inject constructor(
 
     fun handleEvent(event: HomeScreenEvent) {
         when (event) {
-            is HomeScreenEvent.UpdateSearchTextField -> updateSearchText(event.recipe)
+            is HomeScreenEvent.UpdateSearchTextField -> updateSearchText(recipe = event.recipe)
             HomeScreenEvent.ClearSearchTextField -> clearSearchText()
         }
     }

@@ -5,8 +5,4 @@ import com.example.recipesjetpackcompose.presentation.model.Recipe
 data class HomeScreenState(
     val isCloseIconVisible: Boolean = true,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
-    val errorMessage: String = "",
-    val searchText: String = "",
-    val recipes: List<Recipe> = emptyList(),
 )
