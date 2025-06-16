@@ -1,4 +1,4 @@
-<img src="https://github.com/user-attachments/assets/2a782598-d5c5-446c-a8c0-cf8a3c04e560" width="200" height="200"/>
+<img src="https://github.com/user-attachments/assets/bc744b11-483f-400e-9abe-939b1e14f87d" width="200" height="200"/>
 
 # RecipeJetpackCompose
 ## Что за приложение?
