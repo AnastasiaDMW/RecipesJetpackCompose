@@ -9,7 +9,7 @@
 
 <div style="display: flex; justify-content: center;">
 
-  <img src="https://github.com/user-attachments/assets/d5d69aef-fe2d-4d1a-b789-b10349bd6af0" width="200" style="margin-right: 50px"/>
+  <img src="https://github.com/user-attachments/assets/55b7be69-6d64-4d8f-8e08-f261f59f87b0" width="200" style="margin-right: 50px"/>
   <img src="https://github.com/user-attachments/assets/cb6ca49a-86e1-48bd-a03d-6bf56f32429b" width="200" style="margin-right: 50px"/>
   <img src="https://github.com/user-attachments/assets/461a9619-c332-4171-b899-d4580883a684" width="200" style="margin-right: 50px"/>
 
